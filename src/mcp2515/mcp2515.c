@@ -158,7 +158,7 @@ mcp2515_context mcp2515_init(int bus, int cs_pin)
         mcp2515_close(dev);
         return NULL;
     }
-
+    mraa_add_subplatform(MRAA_GENERIC_FIRMATA, "/dev/ttyACM0");
     if (!(dev->spi = mraa_spi_init(bus)))
     {
         printf("%s: mraa_spi_init() failed.\n", __FUNCTION__);
@@ -202,7 +202,7 @@ mcp2515_context mcp2515_init(int bus, int cs_pin)
         mcp2515_close(dev);
         return NULL;
     }
-
+    
     // make sure the mode is config (should be after a reset), set a
     // default speed, and then set normal mode.
     if (mcp2515_set_opmode(dev, MCP2515_OPMODE_CONFIG))
@@ -398,7 +398,7 @@ upm_result_t mcp2515_reset(const mcp2515_context dev)
 
     upm_result_t rv = mcp2515_bus_write(dev, MCP2515_CMD_RESET, NULL, 0);
     upm_delay_ms(100);
-
+    
     return rv;
 }
 
@@ -420,7 +420,7 @@ upm_result_t mcp2515_set_opmode(const mcp2515_context dev,
                                 MCP2515_OPMODE_T opmode)
 {
     assert(dev != NULL);
-
+  
     // make it so
     upm_result_t rv =
         mcp2515_bit_modify(dev, MCP2515_REG_CANCTRL,
@@ -826,7 +826,7 @@ MCP2515_RXMSG_T mcp2515_rx_status_msgs(const mcp2515_context dev)
         (rx_status_byte &
          (_MCP2515_RXSTATUS_RXMSG_MASK << _MCP2515_RXSTATUS_RXMSG_SHIFT))
         >> _MCP2515_RXSTATUS_RXMSG_SHIFT;
-
+    
     return buffers;
 }
 
@@ -891,7 +891,7 @@ upm_result_t mcp2515_get_rx_msg(const mcp2515_context dev,
     }
 
     // first see if we have a message waiting
-    MCP2515_RXMSG_T rxmsgs = mcp2515_rx_status_msgs(dev);
+    MCP2515_RXMSG_T rxmsgs = mcp2515_rx_status_msgs(dev);    
     bool msgavail = false;
     if (rxmsgs == MCP2515_RXMSG_BOTH)
         msgavail = true;

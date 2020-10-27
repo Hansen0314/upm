@@ -18,14 +18,7 @@ int main(int argc, char **argv)
 {
 //! [Interesting]
 
-#if defined(CONFIG_BOARD_ARDUINO_101)
-    // ARDUINO_101 (Quark core) where you must use SPI
-    // Instantiate a MCP2515 instance using default SPI bus and pin 10 as CS
-    mcp2515_context sensor = mcp2515_init(0, 10);
-#else
-    // Instantiate a MCP2515 on SPI bus 0 using a hw CS pin (-1).
-    mcp2515_context sensor = mcp2515_init(0, -1);
-#endif
+    mcp2515_context sensor = mcp2515_init(512+0, -1);
 
     if (!sensor)
     {
@@ -69,7 +62,6 @@ int main(int argc, char **argv)
     if (mcp2515_rx_status_msgs(sensor) == MCP2515_RXMSG_RXB0)
     {
         printf("Packet received in RXB0, decoding...\n");
-
         // now lets retrieve it
         MCP2515_MSG_T msg;
         if (mcp2515_get_rx_msg(sensor, MCP2515_RX_BUFFER0, &msg))
